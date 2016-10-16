@@ -37,11 +37,11 @@ public class ConnectToServer {
     public String receiveData() {
         String msg = null;
         try {
+            sock_in = new DatagramSocket(27985);
             while (true) {
-                sock_in = new DatagramSocket(27985);
                 byte[] bf = new byte[65536];
                 DatagramPacket incoming = new DatagramPacket(bf, bf.length);
-                sock.receive(incoming);
+                sock_in.receive(incoming);
 
                 byte[] data = incoming.getData();
                 msg = new String(data, 0, incoming.getLength());
