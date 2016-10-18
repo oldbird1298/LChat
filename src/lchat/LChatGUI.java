@@ -12,6 +12,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -30,7 +31,6 @@ public class LChatGUI extends javax.swing.JFrame {
     public LChatGUI() {
 
         initComponents();
-        //appendchat();
     }
 
     /**
@@ -56,6 +56,7 @@ public class LChatGUI extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("LChat");
         java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 2, 2);
         flowLayout1.setAlignOnBaseline(true);
         getContentPane().setLayout(flowLayout1);
@@ -90,6 +91,11 @@ public class LChatGUI extends javax.swing.JFrame {
         chatPanel.add(label2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 130, 30));
 
         chatArea.setEditable(false);
+        chatArea.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                chatAreaComponentShown(evt);
+            }
+        });
         chatPanel.add(chatArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 40, 570, 390));
 
         getContentPane().add(chatPanel);
@@ -126,7 +132,7 @@ public class LChatGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-
+//chatArea.append(con.receiveData());
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
         // TODO add your handling code here:
         String msg = String.format("User : %s\n", textField1.getText());
@@ -136,7 +142,6 @@ public class LChatGUI extends javax.swing.JFrame {
         //textArea1.setText(textField1.getText());
         con.sendData(svr, 28988, msg);
         chatArea.append(msg);
-        
         textField1.setText("");
     }//GEN-LAST:event_sendButtonActionPerformed
 
@@ -151,12 +156,19 @@ public class LChatGUI extends javax.swing.JFrame {
         setupGui.setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-    private void appendchat() {
+    private void chatAreaComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_chatAreaComponentShown
+        // TODO add your handling code here:
+        appendchat();
+    }//GEN-LAST:event_chatAreaComponentShown
 
+    public void appendchat() {
+        
+        
         chatArea.append(con.receiveData());
+        
 
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu Settings;
     private java.awt.TextArea chatArea;

@@ -5,6 +5,8 @@
  */
 package lchat;
 
+import chatConnection.ConnectToServer;
+
 /**
  *
  * @author dgerontop
@@ -17,6 +19,7 @@ public class settingsGUI extends javax.swing.JFrame {
     
     String hostname = null;
     String server = null;
+    ConnectToServer connect = new ConnectToServer();
     public settingsGUI() {
         initComponents();
     }
@@ -113,6 +116,7 @@ public class settingsGUI extends javax.swing.JFrame {
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         // TODO add your handling code here:
         server = serverField.getText();
+        connect.sendData(server, 28988, "welcome");
         dispose();
         
     }//GEN-LAST:event_okButtonActionPerformed
