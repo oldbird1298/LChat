@@ -165,7 +165,7 @@ public class LChatGUI extends javax.swing.JFrame {
         
         
         chatArea.append(con.receiveData());
-        System.out.println(con.receiveData());
+        System.out.println(con.receiveData() + "->Started");
         
 
     }
@@ -173,6 +173,7 @@ public class LChatGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu Settings;
     private java.awt.TextArea chatArea;
+    ConnectToServer conn = new ConnectToServer();
     private java.awt.Panel chatPanel;
     private javax.swing.JMenuItem exitItem;
     private javax.swing.JMenu jMenu1;
