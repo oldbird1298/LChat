@@ -44,9 +44,12 @@ public class LChat {
 //                new LChatGUI().setVisible(true);
 //            }
 //        });
-    LChatGUI client = new LChatGUI();
-    client.setVisible(true);
-    client.appendchat();
+        LChatGUI client = new LChatGUI();
+        client.setVisible(true);
+        while (true) {
+
+            client.appendchat();
+        }
     }
-    
+
 }

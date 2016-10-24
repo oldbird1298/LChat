@@ -165,6 +165,7 @@ public class LChatGUI extends javax.swing.JFrame {
         
         
         chatArea.append(con.receiveData());
+        System.out.println(con.receiveData());
         
 
     }
