@@ -7,6 +7,7 @@ package lchat;
 
 import chatConnection.ConnectToServer;
 import java.awt.TextArea;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -27,10 +28,12 @@ public class LChatGUI extends javax.swing.JFrame {
     ConnectToServer con = new ConnectToServer();
     InetAddress server;
     String svr = setupGui.getServer();
+    
 
     public LChatGUI() {
 
         initComponents();
+
     }
 
     /**
@@ -48,6 +51,7 @@ public class LChatGUI extends javax.swing.JFrame {
         textField1 = new java.awt.TextField();
         sendButton = new java.awt.Button();
         label2 = new java.awt.Label();
+        ConnectToServer conn = new ConnectToServer();
         chatArea = new java.awt.TextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -91,6 +95,7 @@ public class LChatGUI extends javax.swing.JFrame {
         chatPanel.add(label2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 130, 30));
 
         chatArea.setEditable(false);
+        //public
         chatArea.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 chatAreaComponentShown(evt);
@@ -136,7 +141,7 @@ public class LChatGUI extends javax.swing.JFrame {
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
         // TODO add your handling code here:
         String msg = String.format("User : %s\n", textField1.getText());
-        
+
         svr = setupGui.getServer();
         textField1.getAccessibleContext();
         //textArea1.setText(textField1.getText());
@@ -154,26 +159,24 @@ public class LChatGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         setupGui.setVisible(true);
+ //       chatArea.append(con.receiveData());
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void chatAreaComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_chatAreaComponentShown
         // TODO add your handling code here:
-        appendchat();
+       // appendchat();
     }//GEN-LAST:event_chatAreaComponentShown
 
     public void appendchat() {
-        
-        
+
         chatArea.append(con.receiveData());
         System.out.println(con.receiveData() + "->Started");
-        
 
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu Settings;
     private java.awt.TextArea chatArea;
-    ConnectToServer conn = new ConnectToServer();
     private java.awt.Panel chatPanel;
     private javax.swing.JMenuItem exitItem;
     private javax.swing.JMenu jMenu1;

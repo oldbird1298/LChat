@@ -155,7 +155,8 @@
             <EventHandler event="componentShown" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="chatAreaComponentShown"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="ConnectToServer conn = new ConnectToServer();"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="ConnectToServer conn = new ConnectToServer();&#xd;&#xa;"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="//public"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">

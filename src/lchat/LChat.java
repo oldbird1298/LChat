@@ -39,17 +39,14 @@ public class LChat {
         //</editor-fold>
 
         /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new LChatGUI().setVisible(true);
-//            }
-//        });
-        LChatGUI client = new LChatGUI();
-        client.setVisible(true);
-        while (true) {
-
-            client.appendchat();
-        }
+       java.awt.EventQueue.invokeLater(new Runnable() {
+           public void run() {
+               LChatGUI client = new LChatGUI();
+               client.setVisible(true);
+           }
+        });
+        
+        
     }
 
 }
