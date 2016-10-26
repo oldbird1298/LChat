@@ -14,7 +14,7 @@ import java.net.InetAddress;
  *
  * @author dgerontop
  */
-public class ConnectToServer {
+public class ConnectToServer extends Thread {
 
     DatagramSocket sock = null;
     DatagramSocket sock_in = null;

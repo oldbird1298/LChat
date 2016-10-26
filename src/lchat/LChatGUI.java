@@ -6,20 +6,21 @@
 package lchat;
 
 import chatConnection.ConnectToServer;
-import java.awt.TextArea;
-import java.lang.reflect.InvocationTargetException;
-import java.net.Inet4Address;
+import java.awt.EventQueue;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.swing.SwingUtilities;
 
 /**
  *
  * @author dgerontop
  */
-public class LChatGUI extends javax.swing.JFrame {
+public class LChatGUI extends javax.swing.JFrame implements Runnable {
 
     /**
      * Creates new form LChatGUI
@@ -28,7 +29,8 @@ public class LChatGUI extends javax.swing.JFrame {
     ConnectToServer con = new ConnectToServer();
     InetAddress server;
     String svr = setupGui.getServer();
-    
+    DatagramSocket socket_in = null;
+    ExecutorService executor = null;
 
     public LChatGUI() {
 
@@ -51,10 +53,11 @@ public class LChatGUI extends javax.swing.JFrame {
         textField1 = new java.awt.TextField();
         sendButton = new java.awt.Button();
         label2 = new java.awt.Label();
-        ConnectToServer conn = new ConnectToServer();
+        //ConnectToServer conn = new ConnectToServer();
         chatArea = new java.awt.TextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        Connect = new javax.swing.JMenuItem();
         exitItem = new javax.swing.JMenuItem();
         Settings = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -95,17 +98,19 @@ public class LChatGUI extends javax.swing.JFrame {
         chatPanel.add(label2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 130, 30));
 
         chatArea.setEditable(false);
-        //public
-        chatArea.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                chatAreaComponentShown(evt);
-            }
-        });
         chatPanel.add(chatArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 40, 570, 390));
 
         getContentPane().add(chatPanel);
 
         jMenu1.setText("File");
+
+        Connect.setText("Connect");
+        Connect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConnectActionPerformed(evt);
+            }
+        });
+        jMenu1.add(Connect);
 
         exitItem.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
         exitItem.setText("Exit");
@@ -146,7 +151,7 @@ public class LChatGUI extends javax.swing.JFrame {
         textField1.getAccessibleContext();
         //textArea1.setText(textField1.getText());
         con.sendData(svr, 28988, msg);
-        chatArea.append(msg);
+        //chatArea.append(msg);
         textField1.setText("");
     }//GEN-LAST:event_sendButtonActionPerformed
 
@@ -159,22 +164,90 @@ public class LChatGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         setupGui.setVisible(true);
- //       chatArea.append(con.receiveData());
+        //       chatArea.append(con.receiveData());
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-    private void chatAreaComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_chatAreaComponentShown
+    private void ConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConnectActionPerformed
         // TODO add your handling code here:
-       // appendchat();
-    }//GEN-LAST:event_chatAreaComponentShown
+        executor = Executors.newSingleThreadExecutor();
 
-    public void appendchat() {
+        executor.submit(() -> {
+            String msg = null;
+            try {
+                socket_in = new DatagramSocket(27985);
+                if (socket_in.isBound()) {
+                    socket_in.close();
+                }
+                socket_in = new DatagramSocket(27985);
+                while (true) {
+                    byte[] bf = new byte[65536];
+                    DatagramPacket incoming = new DatagramPacket(bf, bf.length);
+                    socket_in.receive(incoming);
 
-        chatArea.append(con.receiveData());
-        System.out.println(con.receiveData() + "->Started");
+                    byte[] data = incoming.getData();
+                    msg = new String(data, 0, incoming.getLength());
+                    msg = "\n" + msg;
+                    appendchat(msg);
+                    
+                    Connect.setText("Disconnect");
+                }
+            } catch (IOException e) {
+                System.err.println("IOException : " + e);
+
+            }
+            
+            System.out.println(con.receiveData());
+        });
+
+
+    }//GEN-LAST:event_ConnectActionPerformed
+
+    private void appendchat(final String messageToDisplay) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                chatArea.append(messageToDisplay);
+
+            }
+        });
 
     }
-
+// public static void main(String[] args)  {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(LChatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(LChatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(LChatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(LChatGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//       java.awt.EventQueue.invokeLater(new Runnable() {
+//           public void run() {
+//               LChatGUI client = new LChatGUI();
+//               client.setVisible(true);
+//               client.appendchat();
+//           }
+//        });
+//        
+//        
+//    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem Connect;
     private javax.swing.JMenu Settings;
     private java.awt.TextArea chatArea;
     private java.awt.Panel chatPanel;
@@ -188,4 +261,24 @@ public class LChatGUI extends javax.swing.JFrame {
     private java.awt.TextField textField1;
     private java.awt.List userList;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void run() {
+        String msg = null;
+        try {
+            socket_in = new DatagramSocket(27985);
+            while (true) {
+                byte[] bf = new byte[65536];
+                DatagramPacket incoming = new DatagramPacket(bf, bf.length);
+                socket_in.receive(incoming);
+
+                byte[] data = incoming.getData();
+                msg = new String(data, 0, incoming.getLength());
+                appendchat(msg);
+            }
+        } catch (IOException e) {
+            System.err.println("IOException : " + e);
+
+        }
+    }
 }

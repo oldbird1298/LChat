@@ -117,6 +117,8 @@ public class settingsGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         server = serverField.getText();
         connect.sendData(server, 28988, "welcome");
+        //String testRX = connect.receiveData();
+        //System.out.println(testRX);
         dispose();
         
     }//GEN-LAST:event_okButtonActionPerformed
