@@ -69,6 +69,12 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
         getContentPane().setLayout(flowLayout1);
 
         chatPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        userList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userListActionPerformed(evt);
+            }
+        });
         chatPanel.add(userList, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 130, 430));
 
         label1.setBackground(new java.awt.Color(102, 102, 102));
@@ -145,7 +151,8 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
 //chatArea.append(con.receiveData());
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
         // TODO add your handling code here:
-        String msg = String.format("User : %s\n", textField1.getText());
+        //String msg = String.format("User : %s\n", textField1.getText());
+        String msg = textField1.getText();
 
         svr = setupGui.getServer();
         textField1.getAccessibleContext();
@@ -156,7 +163,7 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_sendButtonActionPerformed
 
     private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitItemActionPerformed
-        // TODO add your handling code here:
+        con.sendData(svr, 28988, "bye");
         System.exit((0));
     }//GEN-LAST:event_exitItemActionPerformed
 
@@ -173,6 +180,7 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
 
         executor.submit(() -> {
             String msg = null;
+            userList.add("User");
             try {
                 socket_in = new DatagramSocket(27985);
                 if (socket_in.isBound()) {
@@ -201,6 +209,10 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
 
 
     }//GEN-LAST:event_ConnectActionPerformed
+
+    private void userListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userListActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_userListActionPerformed
 
     private void appendchat(final String messageToDisplay) {
         SwingUtilities.invokeLater(new Runnable() {

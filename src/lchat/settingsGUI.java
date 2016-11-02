@@ -6,6 +6,7 @@
 package lchat;
 
 import chatConnection.ConnectToServer;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -16,10 +17,11 @@ public class settingsGUI extends javax.swing.JFrame {
     /**
      * Creates new form settingsGUI
      */
-    
     String hostname = null;
     String server = null;
+    String register = null;
     ConnectToServer connect = new ConnectToServer();
+
     public settingsGUI() {
         initComponents();
     }
@@ -116,17 +118,29 @@ public class settingsGUI extends javax.swing.JFrame {
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         // TODO add your handling code here:
         server = serverField.getText();
-        connect.sendData(server, 28988, "welcome");
+        if (!hostnameField.getText().equals("")) {
+            hostname = hostnameField.getText();
+            register = "welcome " + hostname;
+            connect.sendData(server, 28988, register);
+            dispose();
+
+        } else {
+            String message = "Please enter a hostname";
+            JOptionPane.showMessageDialog(null, message, "alert", JOptionPane.ERROR_MESSAGE);
+        }
         //String testRX = connect.receiveData();
         //System.out.println(testRX);
-        dispose();
-        
+
     }//GEN-LAST:event_okButtonActionPerformed
 
-   public String getServer(){
-       return server;
-   
-   }
+    public String getServer() {
+        return server;
+
+    }
+    
+    public String getHostname() {
+        return hostname;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField hostnameField;
