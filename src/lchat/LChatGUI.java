@@ -12,6 +12,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.SwingUtilities;
@@ -187,6 +189,7 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
                     socket_in.close();
                 }
                 socket_in = new DatagramSocket(27985);
+                con.sendData(svr, 28988, "GET");
                 while (true) {
                     byte[] bf = new byte[65536];
                     DatagramPacket incoming = new DatagramPacket(bf, bf.length);
@@ -194,8 +197,14 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
 
                     byte[] data = incoming.getData();
                     msg = new String(data, 0, incoming.getLength());
+                    if (msg.startsWith("USER")) {
+                        String[] conChatList = msg.split(" ");
+                        userList.add(conChatList[1]);
+                    }else {
                     msg = "\n" + msg;
                     appendchat(msg);
+                    
+                    }
                     
                     Connect.setText("Disconnect");
                 }
@@ -217,7 +226,9 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
     private void appendchat(final String messageToDisplay) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                chatArea.append(messageToDisplay);
+                Date tNow = new Date();
+                SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss");
+                chatArea.append(ft.format(tNow) + "--" + messageToDisplay);
 
             }
         });
