@@ -57,6 +57,7 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
         label2 = new java.awt.Label();
         //ConnectToServer conn = new ConnectToServer();
         chatArea = new java.awt.TextArea();
+        alivePlain = new java.awt.Label();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Connect = new javax.swing.JMenuItem();
@@ -107,6 +108,11 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
 
         chatArea.setEditable(false);
         chatPanel.add(chatArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 40, 570, 390));
+
+        alivePlain.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        alivePlain.setText("Alive :");
+        alivePlain.setVisible(false);
+        chatPanel.add(alivePlain, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 0, 100, 30));
 
         getContentPane().add(chatPanel);
 
@@ -165,7 +171,7 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_sendButtonActionPerformed
 
     private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitItemActionPerformed
-        con.sendData(svr, 28988, "bye");
+        con.sendData(svr, 28988, "USER_02 " + setupGui.getHostname());
         System.exit((0));
     }//GEN-LAST:event_exitItemActionPerformed
 
@@ -176,13 +182,14 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
         //       chatArea.append(con.receiveData());
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    @SuppressWarnings("empty-statement")
     private void ConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConnectActionPerformed
         // TODO add your handling code here:
         executor = Executors.newSingleThreadExecutor();
 
         executor.submit(() -> {
             String msg = null;
-            userList.add("User");
+            //userList.add("User");
             try {
                 socket_in = new DatagramSocket(27985);
                 if (socket_in.isBound()) {
@@ -190,6 +197,7 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
                 }
                 socket_in = new DatagramSocket(27985);
                 con.sendData(svr, 28988, "GET");
+                alivePlain.setVisible(true);
                 while (true) {
                     byte[] bf = new byte[65536];
                     DatagramPacket incoming = new DatagramPacket(bf, bf.length);
@@ -197,22 +205,28 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
 
                     byte[] data = incoming.getData();
                     msg = new String(data, 0, incoming.getLength());
-                    if (msg.startsWith("USER")) {
+                    if (msg.startsWith("USER_01")) {
                         String[] conChatList = msg.split(" ");
                         userList.add(conChatList[1]);
-                    }else {
-                    msg = "\n" + msg;
-                    appendchat(msg);
-                    
+                    } else if (msg.startsWith("USER_02")) {
+                        String[] removeElement = msg.split(" ");
+                        userList.remove(removeElement[1]);
+                        //continue;
+                    } else if (!msg.equals("GET")) {
+                        //msg = "\n" + msg;
+                        
+                        appendchat(msg);
+
                     }
                     
+                    alivePlain.setText("Alive : " + userList.size().toString());
                     Connect.setText("Disconnect");
                 }
             } catch (IOException e) {
                 System.err.println("IOException : " + e);
 
             }
-            
+
             System.out.println(con.receiveData());
         });
 
@@ -228,7 +242,7 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
             public void run() {
                 Date tNow = new Date();
                 SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss");
-                chatArea.append(ft.format(tNow) + "--" + messageToDisplay);
+                chatArea.append("\n" + ft.format(tNow) + " -- " + messageToDisplay);
 
             }
         });
@@ -272,6 +286,7 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Connect;
     private javax.swing.JMenu Settings;
+    private java.awt.Label alivePlain;
     private java.awt.TextArea chatArea;
     private java.awt.Panel chatPanel;
     private javax.swing.JMenuItem exitItem;
