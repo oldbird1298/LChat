@@ -6,6 +6,7 @@
 package lchat;
 
 import chatConnection.ConnectToServer;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -64,6 +65,7 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
         exitItem = new javax.swing.JMenuItem();
         Settings = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("LChat");
@@ -88,6 +90,11 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
 
         textField1.setBackground(new java.awt.Color(204, 204, 204));
         textField1.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        textField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textField1ActionPerformed(evt);
+            }
+        });
         chatPanel.add(textField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 440, 440, 30));
 
         sendButton.setBackground(new java.awt.Color(204, 204, 204));
@@ -114,8 +121,14 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
         alivePlain.setVisible(false);
         chatPanel.add(alivePlain, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 0, 100, 30));
 
+        alivePlain.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        alivePlain.setText("Alive :");
+        alivePlain.setVisible(false);
+        chatPanel.add(alivePlain, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 0, 100, 30));
+
         getContentPane().add(chatPanel);
 
+        jMenu1.setMnemonic('F');
         jMenu1.setText("File");
 
         Connect.setText("Connect");
@@ -137,9 +150,11 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
 
         jMenuBar1.add(jMenu1);
 
+        Settings.setMnemonic('d');
         Settings.setText("Edit");
         Settings.setAlignmentX(4.0F);
         Settings.setBorderPainted(true);
+        Settings.setDisplayedMnemonicIndex(2);
 
         jMenuItem1.setText("Settings");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -150,6 +165,12 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
         Settings.add(jMenuItem1);
 
         jMenuBar1.add(Settings);
+
+        jMenu2.setMnemonic('A');
+        jMenu2.setText("About");
+        jMenu2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jMenu2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
 
@@ -214,11 +235,19 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
                         //continue;
                     } else if (!msg.equals("GET")) {
                         //msg = "\n" + msg;
+
                         
+
+                        if (msg.contains(setupGui.getHostname())) {
+                            chatArea.setForeground(Color.red);
+                        } else {
+                            chatArea.setForeground(Color.blue);
+                        }
+
                         appendchat(msg);
 
                     }
-                    
+
                     alivePlain.setText("Alive : " + userList.size().toString());
                     Connect.setText("Disconnect");
                 }
@@ -237,11 +266,27 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
         // TODO add your handling code here:
     }//GEN-LAST:event_userListActionPerformed
 
+    private void textField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textField1ActionPerformed
+        // TODO add your handling code here:
+        //String msg = String.format("User : %s\n", textField1.getText());
+        String msg = textField1.getText();
+
+        svr = setupGui.getServer();
+        textField1.getAccessibleContext();
+        //textArea1.setText(textField1.getText());
+        con.sendData(svr, 28988, msg);
+        //chatArea.append(msg);
+        textField1.setText("");
+    }//GEN-LAST:event_textField1ActionPerformed
+
     private void appendchat(final String messageToDisplay) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 Date tNow = new Date();
-                SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss");
+                //SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss");
+                
+                SimpleDateFormat ft = new SimpleDateFormat("EEE dd MMM . hh:mm:ss");
+                
                 chatArea.append("\n" + ft.format(tNow) + " -- " + messageToDisplay);
 
             }
@@ -291,6 +336,7 @@ public class LChatGUI extends javax.swing.JFrame implements Runnable {
     private java.awt.Panel chatPanel;
     private javax.swing.JMenuItem exitItem;
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private java.awt.Label label1;
